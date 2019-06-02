@@ -8,8 +8,12 @@ class HeaderComponent extends Component {
   }
 
   render() {
-    const {allColumns, selectedColumns} = this.props;
-   return <ColumnsWindowComponent buttonLabel='Configure' allColumns={allColumns} selectedColumns={selectedColumns} />;
+    const {allColumns, selectedColumns,changeLists} = this.props;
+   return <ColumnsWindowComponent buttonLabel='Configure'
+                                  allColumns={allColumns}
+                                  selectedColumns={selectedColumns}
+                                  changeLists={changeLists}
+   />;
 
   }
 }

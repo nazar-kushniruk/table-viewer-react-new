@@ -6,40 +6,60 @@ class ColumnsSelectorComponent extends Component {
         super(props);
 
         this.state = {
-            availableColumns: this.props.availableColumns,
-            selectedColumns: this.props.selectedColumns
+            availableColumns: [],
+            selectedColumns: []
         };
         this.deleteSelectedColumn = this.deleteSelectedColumn.bind(this);
         this.addSelectedColumn = this.addSelectedColumn.bind(this);
-        console.log('ColumnsSelectorComponent  constructor  this.state->',   this.state);
+        this.updateSelectedColumnsForTable = this.updateSelectedColumnsForTable.bind(this);
+        console.log('ColumnsSelectorComponent  constructor  this.state->', this.state);
+    }
+
+    componentDidMount() {
+        const {availableColumns, selectedColumns} = this.props;
+        this.setState({availableColumns, selectedColumns})
+        console.log(this.props);
     }
 
     deleteSelectedColumn(column) {
-        this.setState((prevState) => {
-            selectedColumn : prevState.selectedColumns.filter(i => i !== column)
-        })
+        let {selectedColumns, availableColumns} = this.state;
+        availableColumns.push(column);
+
+        this.setState({
+                selectedColumns: selectedColumns.filter(i => i !== column),
+                availableColumns: availableColumns
+            }
+        );
     }
 
     addSelectedColumn(column) {
-        console.log('addSelectedColumn column->', column);
-        console.log('ColumnsSelectorComponent addSelectedColumn this.state ->', this.state);
-        const nowState =  this.state;
-        this.setState(function(state, props)  {
-            let {selectedColumns,availableColumns}  = state;
+        const nowState = this.state;
+        let {selectedColumns, availableColumns} = this.state;
 
-            availableColumns = availableColumns.reduce(function (result,column) {
+        selectedColumns.push(column);
+        availableColumns = availableColumns.reduce(function (result, column) {
+            if (!nowState.selectedColumns.includes(column)) {
+                result.push(column);
+            }
+            return result;
+        }, []);
 
-                if(!nowState.selectedColumns.includes(column) ){
-                    result.push(column);
-                }
-                return result;
-            }, []);
-            selectedColumns.push(column);
-            console.log('ColumnsSelectorComponent setState selectedColumns ->', selectedColumns);
-            return { selectedColumns,
+        this.setState({
+                selectedColumns,
                 availableColumns
+            }
+        )
+    }
+    updateSelectedColumnsForTable() {
+        this.props.changeLists(this.state.selectedColumns);
 
-            }})
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.takeColumns !== prevProps.takeColumns &&  this.props.takeColumns === true) {
+            this.updateSelectedColumnsForTable();
+            console.log('componentDidUpdate work!!->', this.props);
+        }
     }
 
     render() {
@@ -51,11 +71,13 @@ class ColumnsSelectorComponent extends Component {
                     <ColumnsListComponent
                         columns={availableColumns}
                         title='Available'
-                        addSelectedColumn={this.addSelectedColumn}/>
+                        columnAction={this.addSelectedColumn}
+                        action="+"/>
                     <ColumnsListComponent
                         columns={selectedColumns}
-                        deleteSelectedColumn={this.deleteSelectedColumn}
-                        title='Selected'/>
+                        columnAction={this.deleteSelectedColumn}
+                        title='Selected'
+                        action="x"/>
                 </div>
             </div>
         );

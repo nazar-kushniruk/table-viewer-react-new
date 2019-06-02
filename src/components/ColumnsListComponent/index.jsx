@@ -9,8 +9,8 @@ class ColumnsListComponent extends Component {
     }
 
     render() {
-        const {columns, addSelectedColumn} = this.props;
-        console.log('ColumnsListComponent render columns->', columns);
+        const {columns, columnAction,action} = this.props;
+
         return (
             <div className='col'>
                 <ul className="list-group">
@@ -18,7 +18,8 @@ class ColumnsListComponent extends Component {
                     {columns && columns.length ? columns.map(column =>
                         <ColumnsItemComponent
                             column={column}
-                            addSelectedColumn={addSelectedColumn}
+                            columnAction={columnAction}
+                            action={action}
                         />) : 'No columns selected'}
 
                 </ul>

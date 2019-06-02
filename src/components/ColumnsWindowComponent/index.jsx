@@ -8,12 +8,14 @@ class ColumnsWindowComponent extends Component {
         super(props);
         this.state = {
             modal: false,
-            allColumns: this.props.allColumns,
-            selectedColumns: this.props.selectedColumns
+            allColumns:props.allColumns,
+            selectedColumns: props.selectedColumns,
+            takeColumns : false
 
         };
 
         this.toggle = this.toggle.bind(this);
+        this.onConfirmButtonClick = this.onConfirmButtonClick.bind(this);
     }
 
     toggle() {
@@ -21,22 +23,30 @@ class ColumnsWindowComponent extends Component {
             modal: !prevState.modal
         }));
     }
-
+    onConfirmButtonClick ( ) {
+        this.setState({takeColumns : true});
+        this.toggle();
+    }
     render() {
-        const {allColumns, selectedColumns} = this.state;
+        const {allColumns, selectedColumns,takeColumns} = this.state;
+
         return (
             <div>
                 <Button color="danger" onClick={this.toggle}>{this.props.buttonLabel}</Button>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
                     <ModalBody>
-                        <ColumnsSelectorComponent availableColumns={allColumns} selectedColumns={selectedColumns}/>
+                        <ColumnsSelectorComponent availableColumns={allColumns}
+                                                  selectedColumns={selectedColumns}
+                                                  changeLists={this.props.changeLists}
+                                                  takeColumns={takeColumns}
+                        />
 
                     </ModalBody>
                     <ModalFooter>
 
                         <Button color="secondary" onClick={this.toggle}>Cancel</Button> {' '}
-                        <Button color="primary" onClick={this.toggle}>Confirm</Button>
+                        <Button color="primary" onClick={this.onConfirmButtonClick}>Confirm</Button>
                     </ModalFooter>
                 </Modal>
             </div>
